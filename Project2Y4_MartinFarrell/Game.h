@@ -33,7 +33,8 @@ private:
 	Maze m_maze;
 	ContextFree m_contextFree;
 	Wall m_walls[20];
-
+	int count = 0;
+	int numOfFrames = 30;
 
 
 	sf::RenderWindow m_window; // main SFML window

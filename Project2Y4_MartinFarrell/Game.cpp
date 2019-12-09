@@ -118,6 +118,12 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close(); 
 	}
+	count++;
+	if (count == numOfFrames)
+	{
+		m_contextFree.setVelocity(m_maze.grid[34][18].getPosition());
+		count = 0;
+	}
 
 	m_contextFree.move(m_maze.grid[34][18].getPosition(), t_deltaTime);
 
@@ -125,8 +131,13 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		if (calculateDistBetween(m_walls[i].getPos(), m_contextFree.getPos()) < 50.0f)
 		{
-			std::cout << "collision";
+			m_contextFree.setVelocityDown();
 		}
+	}
+
+	if (calculateDistBetween(m_maze.grid[34][18].getPosition(), m_contextFree.getPos()) < 50.0f)
+	{
+		m_contextFree.setMovingFalse();
 	}
 }
 

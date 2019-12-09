@@ -23,11 +23,30 @@ sf::Vector2f ContextFree::getPos()
 	return m_pos;
 }
 
-void ContextFree::move(sf::Vector2f goal, sf::Time time)
+void ContextFree::setVelocity(sf::Vector2f goal)
 {
 	m_vel = goal - m_pos;
 	float unit = sqrt(m_vel.x * m_vel.x + m_vel.y * m_vel.y);
-	m_vel = sf::Vector2f(m_vel.x / unit *speed, m_vel.y / unit * speed);
-	m_pos = m_pos + m_vel * time.asSeconds();
+	m_vel = sf::Vector2f(m_vel.x / unit * speed, m_vel.y / unit * speed);
+}
+
+void ContextFree::setVelocityDown()
+{
+	m_pos.x -= 50;
 	m_body.setPosition(m_pos);
+	m_vel = sf::Vector2f(0, 200);
+}
+
+void ContextFree::move(sf::Vector2f goal, sf::Time time)
+{
+	if (moving)
+	{
+		m_pos = m_pos + m_vel * time.asSeconds();
+		m_body.setPosition(m_pos);
+	}
+}
+
+void ContextFree::setMovingFalse()
+{
+	moving = false;
 }
