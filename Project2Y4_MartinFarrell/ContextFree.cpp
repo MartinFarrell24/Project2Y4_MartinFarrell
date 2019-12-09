@@ -1,0 +1,33 @@
+#include"ContextFree.h"
+
+ContextFree::ContextFree()
+{
+	m_pos = sf::Vector2f(100, 105);
+	m_body.setPointCount(3);
+	m_body.setFillColor(sf::Color::Yellow);
+	m_body.setPosition(sf::Vector2f(m_pos));
+	m_body.setRadius(50);
+}
+
+ContextFree::~ContextFree()
+{
+}
+
+sf::CircleShape ContextFree::getBody()
+{
+	return m_body;
+}
+
+sf::Vector2f ContextFree::getPos()
+{
+	return m_pos;
+}
+
+void ContextFree::move(sf::Vector2f goal, sf::Time time)
+{
+	m_vel = goal - m_pos;
+	float unit = sqrt(m_vel.x * m_vel.x + m_vel.y * m_vel.y);
+	m_vel = sf::Vector2f(m_vel.x / unit *speed, m_vel.y / unit * speed);
+	m_pos = m_pos + m_vel * time.asSeconds();
+	m_body.setPosition(m_pos);
+}

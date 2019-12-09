@@ -15,11 +15,10 @@
 /// load and setup thne image
 /// </summary>
 Game::Game() :
-	m_window{ sf::VideoMode{ 800U, 600U, 32U }, "SFML Game" },
+	m_window{ sf::VideoMode{ 3600U, 2000U, 32U }, "SFML Game" },
 	m_exitGame{false} //when true game will exit
 {
-	setupFontAndText(); // load font 
-	setupSprite(); // load texture
+	createWalls();
 }
 
 /// <summary>
@@ -56,6 +55,24 @@ void Game::run()
 		}
 		render(); // as many as possible
 	}
+}
+void Game::createWalls()
+{
+	for (int i = 3; i < 13; i++)
+	{
+		m_walls[i - 3].setPos(m_maze.grid[15][i].getPosition());
+	}
+
+	for (int i = 6; i < 16; i++)//wall
+	{
+		m_walls[i + 4].setPos(m_maze.grid[24][i].getPosition());
+	}
+}
+float Game::calculateDistBetween(sf::Vector2f pointOne, sf::Vector2f pointTwo)
+{
+	float distance = ((pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x)) + ((pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y));
+	return sqrt(distance);
+
 }
 /// <summary>
 /// handle user and system events/ input
@@ -99,7 +116,17 @@ void Game::update(sf::Time t_deltaTime)
 {
 	if (m_exitGame)
 	{
-		m_window.close();
+		m_window.close(); 
+	}
+
+	m_contextFree.move(m_maze.grid[34][18].getPosition(), t_deltaTime);
+
+	for (int i = 0; i < 20; i++)
+	{
+		if (calculateDistBetween(m_walls[i].getPos(), m_contextFree.getPos()) < 50.0f)
+		{
+			std::cout << "collision";
+		}
 	}
 }
 
@@ -108,9 +135,22 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
-	m_window.draw(m_welcomeMessage);
-	m_window.draw(m_logoSprite);
+	m_window.clear();
+	
+	for (int row = 0; row < 36; row++)
+	{
+		for (int col = 0; col < 20; col++)
+		{
+			m_window.draw(m_maze.grid[row][col]);
+		}
+	}
+
+	for (int i = 0; i < 20; i++)
+	{
+		m_window.draw(m_walls[i].getBody());
+	}
+
+	m_window.draw(m_contextFree.getBody());
 	m_window.display();
 }
 
@@ -119,19 +159,6 @@ void Game::render()
 /// </summary>
 void Game::setupFontAndText()
 {
-	if (!m_ArialBlackfont.loadFromFile("ASSETS\\FONTS\\ariblk.ttf"))
-	{
-		std::cout << "problem loading arial black font" << std::endl;
-	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80U);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
-
 }
 
 /// <summary>
@@ -139,11 +166,5 @@ void Game::setupFontAndText()
 /// </summary>
 void Game::setupSprite()
 {
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
-	{
-		// simple error message if previous call fails
-		std::cout << "problem loading logo" << std::endl;
-	}
-	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
+
 }

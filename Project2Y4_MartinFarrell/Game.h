@@ -4,6 +4,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 #include <SFML/Graphics.hpp>
+#include"Maze.h"
+#include"ContextFree.h"
+#include"Wall.h"
 
 class Game
 {
@@ -14,6 +17,8 @@ public:
 	/// main method for game
 	/// </summary>
 	void run();
+	void createWalls();
+	float calculateDistBetween(sf::Vector2f pointOne, sf::Vector2f pointTwo);
 
 private:
 
@@ -25,11 +30,13 @@ private:
 	void setupFontAndText();
 	void setupSprite();
 
+	Maze m_maze;
+	ContextFree m_contextFree;
+	Wall m_walls[20];
+
+
+
 	sf::RenderWindow m_window; // main SFML window
-	sf::Font m_ArialBlackfont; // font used by message
-	sf::Text m_welcomeMessage; // text used for message on screen
-	sf::Texture m_logoTexture; // texture used for sfml logo
-	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	bool m_exitGame; // control exiting game
 
 };
