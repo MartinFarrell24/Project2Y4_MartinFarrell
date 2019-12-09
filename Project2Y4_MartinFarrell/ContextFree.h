@@ -17,7 +17,6 @@ private:
 	sf::CircleShape m_body;
 	sf::Vector2f m_pos;
 	sf::Vector2f m_vel;
-	sf::Vector2f m_prevVel;
-	float speed = 500;
+	float speed = 250;
 	bool moving = true;
 };

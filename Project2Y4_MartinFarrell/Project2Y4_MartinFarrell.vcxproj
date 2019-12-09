@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextFree.cpp" />
+    <ClCompile Include="ContextSensitiveSteering.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maze.cpp" />
@@ -27,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContextFree.h" />
+    <ClInclude Include="ContextSensitiveSteering.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Wall.h" />

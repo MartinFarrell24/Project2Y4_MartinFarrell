@@ -67,6 +67,23 @@ void Game::createWalls()
 	{
 		m_walls[i + 4].setPos(m_maze.grid[24][i].getPosition());
 	}
+
+	for (int i = 0; i < 36; i++)
+	{
+		m_outerWalls[i].setPos(m_maze.grid[i][0].getPosition());
+	}
+	for (int i = 36; i < 72; i++)
+	{
+		m_outerWalls[i].setPos(m_maze.grid[i-36][19].getPosition());
+	}
+	for (int i = 0; i < 18; i++)
+	{
+		m_outerWalls[i + 72].setPos(m_maze.grid[0][i + 1].getPosition());
+	}
+	for (int i = 0; i < 18; i++)
+	{
+		m_outerWalls[i + 90].setPos(m_maze.grid[0][i + 1].getPosition());
+	}
 }
 float Game::calculateDistBetween(sf::Vector2f pointOne, sf::Vector2f pointTwo)
 {
@@ -126,6 +143,7 @@ void Game::update(sf::Time t_deltaTime)
 	}
 
 	m_contextFree.move(m_maze.grid[34][18].getPosition(), t_deltaTime);
+	m_sensitive.move(t_deltaTime);
 
 	for (int i = 0; i < 20; i++)
 	{
@@ -134,11 +152,38 @@ void Game::update(sf::Time t_deltaTime)
 			m_contextFree.setVelocityDown();
 		}
 	}
+	for (int i = 0; i < 20; i++)
+	{
+		if (calculateDistBetween(m_walls[i].getPos(), m_sensitive.getPos()) < 100.0f)
+		{
+			m_sensitive.updateDanger();
+			m_sensitive.updateVelocity(m_maze.grid[19][10].getPosition());
+		}
+	}
+	for (int i = 0; i < 108; i++)
+	{
+		if (calculateDistBetween(m_outerWalls[i].getPos(), m_sensitive.getPos()) < 100.0f)
+		{
+			m_sensitive.updateDanger();
+			m_sensitive.updateVelocity(m_maze.grid[19][10].getPosition());
+		}
+	}
 
 	if (calculateDistBetween(m_maze.grid[34][18].getPosition(), m_contextFree.getPos()) < 50.0f)
 	{
 		m_contextFree.setMovingFalse();
 	}
+	m_sensitive.checkIfDanger();
+
+	if (calculateDistBetween(m_maze.grid[19][10].getPosition(), m_sensitive.getPos()) < 300.0f)
+	{
+		m_sensitive.setGoalFoundTrue();
+	}
+	if (calculateDistBetween(m_maze.grid[19][10].getPosition(), m_sensitive.getPos()) < 50.0f)
+	{
+		m_sensitive.setMovingFalse();
+	}
+
 }
 
 /// <summary>
@@ -160,8 +205,13 @@ void Game::render()
 	{
 		m_window.draw(m_walls[i].getBody());
 	}
+	for (int i = 0; i < 108; i++)
+	{
+		m_window.draw(m_outerWalls->getBody());
+	}
 
 	m_window.draw(m_contextFree.getBody());
+	m_window.draw(m_sensitive.getBody());
 	m_window.display();
 }
 

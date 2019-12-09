@@ -7,6 +7,7 @@
 #include"Maze.h"
 #include"ContextFree.h"
 #include"Wall.h"
+#include"ContextSensitiveSteering.h"
 
 class Game
 {
@@ -32,7 +33,10 @@ private:
 
 	Maze m_maze;
 	ContextFree m_contextFree;
+	ContextSensitiveSteering m_sensitive;
 	Wall m_walls[20];
+	Wall m_outerWalls[108];
+	Wall m_bottomWall[18];
 	int count = 0;
 	int numOfFrames = 30;
 

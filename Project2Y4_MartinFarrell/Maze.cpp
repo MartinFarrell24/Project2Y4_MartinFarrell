@@ -17,6 +17,8 @@ Maze::Maze()
 
 	grid[1][1].setFillColor(sf::Color::Magenta);//start square
 	grid[34][18].setFillColor(sf::Color::Red);//end square
+	grid[19][10].setFillColor(sf::Color::Red);//end square
+	grid[5][8].setFillColor(sf::Color::Yellow);
 
 	//for (int i = 3; i < 13; i++)//wall
 	//{
