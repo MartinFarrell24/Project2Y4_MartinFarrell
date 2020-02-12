@@ -19,6 +19,7 @@ Game::Game() :
 	m_exitGame{false} //when true game will exit
 {
 	createWalls();
+	m_sensitive.setInitialVel(m_maze.grid[34][18].getPosition());
 }
 
 /// <summary>
@@ -173,7 +174,7 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_contextFree.setMovingFalse();
 	}
-	m_sensitive.checkIfDanger();
+	m_sensitive.calculateDanger();
 
 	if (calculateDistBetween(m_maze.grid[19][10].getPosition(), m_sensitive.getPos()) < 300.0f)
 	{
@@ -183,7 +184,6 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_sensitive.setMovingFalse();
 	}
-
 }
 
 /// <summary>

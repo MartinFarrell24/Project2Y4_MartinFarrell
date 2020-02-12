@@ -9,8 +9,9 @@ public:
 	sf::CircleShape getBody();
 	sf::Vector2f getPos();
 
+	void setInitialVel(sf::Vector2f goalPos);
 	void move(sf::Time time);
-	void checkIfDanger();
+	void calculateDanger();
 	void updateVelocity(sf::Vector2f goal);
 	void updateDanger();
 	void setGoalFoundTrue();
@@ -23,7 +24,6 @@ private:
 	sf::Vector2f m_vel;
 	float m_danger[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 	float m_desire[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-	sf::Vector2f m_direction[8];
 	int direction = 2;
 
 	bool goalFound = false;
