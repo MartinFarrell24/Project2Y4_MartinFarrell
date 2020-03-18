@@ -32,6 +32,8 @@ private:
 	void setupSprite();
 
 	Maze m_maze;
+	float width = 25;
+	float length = 50;
 	ContextFree m_contextFree;
 	ContextSensitiveSteering m_sensitive;
 	Wall m_walls[20];
@@ -39,7 +41,8 @@ private:
 	Wall m_bottomWall[18];
 	int count = 0;
 	int numOfFrames = 30;
-
+	static const int numOfVertices = 16;
+	sf::Vertex vertices[numOfVertices];
 
 	sf::RenderWindow m_window; // main SFML window
 	bool m_exitGame; // control exiting game

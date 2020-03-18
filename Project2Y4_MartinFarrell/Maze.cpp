@@ -6,11 +6,11 @@ Maze::Maze()
 	{
 		for (int col = 0; col < 20; col++)
 		{
-			grid[row][col].setPosition(100 * row, 100 * col);
+			grid[row][col].setPosition(50 * row, 50 * col);
 			grid[row][col].setFillColor(sf::Color::Blue);
 			grid[row][col].setOutlineColor(sf::Color::White);
-			grid[row][col].setOutlineThickness(2.0f);
-			grid[row][col].setSize(sf::Vector2f(100, 100));
+			grid[row][col].setOutlineThickness(1.0f);
+			grid[row][col].setSize(sf::Vector2f(50, 50));
 		}
 	}
 

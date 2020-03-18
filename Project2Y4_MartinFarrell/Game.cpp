@@ -15,11 +15,22 @@
 /// load and setup thne image
 /// </summary>
 Game::Game() :
-	m_window{ sf::VideoMode{ 3600U, 2000U, 32U }, "SFML Game" },
+	m_window{ sf::VideoMode{ 1800U, 1000U, 32U }, "SFML Game" },
 	m_exitGame{false} //when true game will exit
 {
 	createWalls();
 	m_sensitive.setInitialVel(m_maze.grid[34][18].getPosition());
+	
+	vertices[0] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[1] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y - length), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[2] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[3] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + length), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[4] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[5] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[6] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[7] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[8] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+	vertices[9] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 10));
 }
 
 /// <summary>
@@ -184,6 +195,22 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_sensitive.setMovingFalse();
 	}
+	vertices[0] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[1] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y - length), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[2] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[3] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width + length), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[4] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[5] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[6] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+	vertices[7] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+	vertices[8] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+	vertices[9] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
+	vertices[10] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+	vertices[11] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
+	vertices[12] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+	vertices[13] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
+	vertices[14] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+	vertices[15] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
 }
 
 /// <summary>
@@ -212,6 +239,7 @@ void Game::render()
 
 	m_window.draw(m_contextFree.getBody());
 	m_window.draw(m_sensitive.getBody());
+	m_window.draw(vertices, numOfVertices, sf::Lines);
 	m_window.display();
 }
 

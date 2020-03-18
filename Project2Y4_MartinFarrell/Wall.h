@@ -11,6 +11,6 @@ public:
 
 private:
 	sf::Vector2f m_pos;
-	float width = 100.0f;
+	float width = 50.0f;
 	sf::RectangleShape m_body;
 };
