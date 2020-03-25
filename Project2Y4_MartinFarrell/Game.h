@@ -20,6 +20,7 @@ public:
 	void run();
 	void createWalls();
 	float calculateDistBetween(sf::Vector2f pointOne, sf::Vector2f pointTwo);
+	bool rayCastWall();
 
 private:
 
@@ -27,13 +28,11 @@ private:
 	void processKeys(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
 	void render();
-	
-	void setupFontAndText();
-	void setupSprite();
 
 	Maze m_maze;
 	float width = 25;
 	float length = 50;
+	sf::Vector2f dir = sf::Vector2f(1000, 0);
 	ContextFree m_contextFree;
 	ContextSensitiveSteering m_sensitive;
 	Wall m_walls[20];

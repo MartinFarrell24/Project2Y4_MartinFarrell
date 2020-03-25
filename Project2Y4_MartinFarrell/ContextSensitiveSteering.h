@@ -9,13 +9,6 @@ public:
 	sf::CircleShape getBody();
 	sf::Vector2f getPos();
 
-	void setInitialVel(sf::Vector2f goalPos);
-	void move(sf::Time time);
-	void calculateDanger();
-	void updateVelocity(sf::Vector2f goal);
-	void updateDanger();
-	void setGoalFoundTrue();
-	void setMovingFalse();
 
 private:
 	float speed = 150;
@@ -26,6 +19,9 @@ private:
 	float m_desire[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 	int direction = 2;
 
-	bool goalFound = false;
-	bool moving = true;
+	float width = 25;
+	float length = 50;
+	static const int numOfVertices = 16;
+	sf::Vertex vertices[numOfVertices];
+
 };
