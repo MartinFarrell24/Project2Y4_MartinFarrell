@@ -8,6 +8,9 @@
 #include"ContextFree.h"
 #include"Wall.h"
 #include"ContextSensitiveSteering.h"
+#include"Wander.h"
+#include<ctime>
+#include"Seek.h"
 
 class Game
 {
@@ -21,14 +24,13 @@ public:
 	void createWalls();
 	float calculateDistBetween(sf::Vector2f pointOne, sf::Vector2f pointTwo);
 	bool rayCastWall();
-
-private:
-
 	void processEvents();
 	void processKeys(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
 	void render();
+	sf::Vector2f getUnitVector(sf::Vector2f vel);
 
+private:
 	Maze m_maze;
 	float width = 25;
 	float length = 50;
@@ -46,6 +48,19 @@ private:
 	sf::RenderWindow m_window; // main SFML window
 	bool m_exitGame; // control exiting game
 
+	Wander m_wander;
+	Seek m_seek;
+	sf::Vector2f vecTowardsGoal;
+	bool moving = true;
+
+	sf::Texture texture;
+	sf::Sprite sprite;
+	sf::Texture texture2;
+	sf::Sprite sprite2;
+	sf::Texture texture3;
+	sf::Sprite sprite3;
+	sf::Texture texture4;
+	sf::Sprite sprite4;
 };
 
 #endif // !GAME_HPP

@@ -24,14 +24,18 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="Seek.cpp" />
     <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="Wander.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContextFree.h" />
     <ClInclude Include="ContextSensitiveSteering.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Maze.h" />
+    <ClInclude Include="Seek.h" />
     <ClInclude Include="Wall.h" />
+    <ClInclude Include="Wander.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="ASSETS\IMAGES\SFML-LOGO.png">

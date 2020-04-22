@@ -19,4 +19,6 @@ private:
 	sf::Vector2f m_vel;
 	float speed = 250;
 	bool moving = true;
+
+	sf::Vector2f lookAhead;
 };

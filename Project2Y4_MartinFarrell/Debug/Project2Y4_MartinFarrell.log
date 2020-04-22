@@ -1,2 +1,73 @@
 ﻿  Game.cpp
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(35,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(36,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(36,51): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(47,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(55,40): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(63,42): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(71,42): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(267,70): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(267,50): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(271,64): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(271,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(275,68): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(275,50): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(279,68): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Game.cpp(279,50): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
   Project2Y4_MartinFarrell.vcxproj -> D:\Murt\Documents\Project2Y4_MartinFarrell\Project2Y4_MartinFarrell\Debug\Project2Y4_MartinFarrell.exe
