@@ -405,16 +405,17 @@ for (int i = 0; i < 3; i++)
 {
 	distBools[i] = false;
 }
-if (moving)
+if (moving && m_gamestate == GameState::SeekMode)
 {
 	m_seek.move(t_deltaTime);
 }
 
 m_seek.setVelocity(sf::Vector2f(m_seek.getVel().x, m_seek.getVel().y + 2.4f));
 
-if (m_seek.getBody().getGlobalBounds().intersects(m_maze.grid[34][18].getGlobalBounds()))
+if (m_seek.getBody().getGlobalBounds().intersects(m_goalAI.getGlobalBounds()))
 {
 	moving = false;
+	m_gamestate = GameState::SeekModeResults;
 }
 sprite.setPosition(m_contextFree.getPos().x, m_contextFree.getPos().y - 20);
 sprite2.setPosition(m_sensitive.getPos().x, m_sensitive.getPos().y - 20);
@@ -465,8 +466,9 @@ if (m_gamestate == GameState::ContextFreeResults)
 
 if (m_gamestate == GameState::WanderMode)
 {
+	resultsTimer = 0;
 	m_time.setString("Time: " + std::to_string(counter / 60.0f));
-	counter++;
+	counter+=2;
 
 	if (calculateDistBetween(m_goalAI.getPosition(), m_wander.getPos()) < 50.0f)
 	{
@@ -479,10 +481,36 @@ if (m_gamestate == GameState::WanderMode)
 if (m_gamestate == GameState::WanderModeResults)
 {
 	modeString.setString("Wander results:");
-	wanderTime.setString("Time taken was: " + std::to_string(counter / 30.0f));
+	wanderTime.setString("Time taken was: " + std::to_string(counter / 60.0f));
 	wanderCollision.setString("Number of collisions: " + std::to_string(wanderCollisionCount /2 + 1));
 	wanderPathLength.setString("Path length was: " + std::to_string(m_wander.getPathLength()));
 	wanderExecution.setString("Average execution time: " + std::to_string(executionStart - executionEnd / counter));
+	resultsTimer++;
+
+	if (resultsTimer == 300)
+	{
+		m_gamestate = GameState::SeekMode;
+		counter = 0;
+	}
+}
+
+if (m_gamestate == GameState::SeekMode)
+{
+	std::cout << std::to_string(m_seek.getPos().y) << std::endl;
+	if (m_seek.getPos().y >= 700 && m_seek.getPos().x < 800)
+	{
+		m_seek.setVelocity(sf::Vector2f(200, 0));
+	}
+	if (m_seek.getPos().y >= 900 && m_seek.getPos().x < 1200 && m_seek.getPos().x > 1000)
+	{
+		m_seek.setVelocity(sf::Vector2f(m_goalAI.getPosition() - m_seek.getPos()));
+	}
+	else if (m_seek.getPos().y >= 900 && m_seek.getPos().x > 1200)
+	{
+		m_seek.setSteering();
+		m_seek.setVelocity(sf::Vector2f(m_goalAI.getPosition() - m_seek.getPos()));
+	}
+
 }
 }
 

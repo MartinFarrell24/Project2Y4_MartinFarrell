@@ -13,6 +13,7 @@ public:
 	sf::Vector2f getVel();
 	sf::Vector2f getSteering();
 	sf::Vector2f getDesiredVelocity();
+	void setSteering();
 
 private:
 	sf::CircleShape m_body;

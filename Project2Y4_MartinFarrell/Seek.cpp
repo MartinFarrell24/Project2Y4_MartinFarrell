@@ -2,7 +2,7 @@
 
 Seek::Seek()
 {
-	m_pos = sf::Vector2f(1100, 105);
+	m_pos = sf::Vector2f(100, 105);
 	m_body.setPointCount(3);
 	m_body.setFillColor(sf::Color::Cyan);
 	m_body.setPosition(sf::Vector2f(m_pos));
@@ -50,3 +50,9 @@ sf::Vector2f Seek::getDesiredVelocity()
 {
 	return sf::Vector2f();
 }
+
+void Seek::setSteering()
+{
+	steering = sf::Vector2f(0, 0);
+}
+
