@@ -14,8 +14,6 @@ Maze::Maze()
 		}
 	}
 
-	grid[34][18].setFillColor(sf::Color::Red);//end square
-
 	for (int i = 0; i < 36; i++)
 	{
 		grid[i][0].setFillColor(sf::Color::Green);

@@ -14,6 +14,9 @@ public:
 	sf::Vector2f getSteering();
 	sf::Vector2f getDesiredVelocity();
 	void setSteering();
+	void calcPathLength();
+	float getPathLength();
+	void setPosition();
 
 private:
 	sf::CircleShape m_body;
@@ -22,4 +25,7 @@ private:
 	sf::Vector2f desiredVelocity;
 	sf::Vector2f steering;
 	float speed = 250;
+
+	sf::Vector2f prevPos;
+	float distTravelled = 0.0;
 };

@@ -9,5 +9,6 @@ enum GameState
 	WanderMode,
 	WanderModeResults,
 	ContextSensitiveMode,
-	ContextSensitiveResults
+	ContextSensitiveResults,
+	Comparison
 };

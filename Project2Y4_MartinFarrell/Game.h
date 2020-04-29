@@ -69,6 +69,9 @@ private:
 	sf::Font m_font;
 	float counter = 0.0f;
 
+	sf::Texture goalTexture;
+	sf::Sprite goalSprite;
+
 
 	sf::RectangleShape resultMenu;
 	sf::Text modeString;
@@ -80,14 +83,30 @@ private:
 	sf::Text wanderExecution;
 	sf::Text wanderPathLength;
 	sf::Text wanderCollision;
+	sf::Text seekTime;
+	sf::Text seekExecution;
+	sf::Text seekPathLength;
+	sf::Text seekCollision;
+	sf::Text sensitiveTime;
+	sf::Text sensitiveExecution;
+	sf::Text sensitivePathLength;
+	sf::Text sensitiveCollision;
 
 	int wanderCollisionCount = 0;
-
 	bool distBools[3];
 	float executionStart;
 	float executionEnd;
 	float resultsTimer = 0;
 	bool doOnce = false;
+	float force = 2.4f;
+
+	int contextFreeScore =0;
+	int wanderScore=0;
+	int seekScore=0;
+	int contextSensitiveScore=0;
+	sf::Text scores[4];
+
+	int count = 0;
 };
 
 #endif // !GAME_HPP

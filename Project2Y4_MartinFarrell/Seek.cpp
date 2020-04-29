@@ -56,3 +56,20 @@ void Seek::setSteering()
 	steering = sf::Vector2f(0, 0);
 }
 
+void Seek::calcPathLength()
+{
+	distTravelled += sqrt(((prevPos.x - m_pos.x) * (prevPos.x - m_pos.x)) + ((prevPos.y - m_pos.y) * (prevPos.y - m_pos.y)));
+	prevPos = m_pos;
+}
+
+float Seek::getPathLength()
+{
+	return distTravelled;
+}
+
+void Seek::setPosition()
+{
+	m_pos = sf::Vector2f(-90000, 0);
+	m_body.setPosition(m_pos);
+}
+

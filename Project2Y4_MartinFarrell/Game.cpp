@@ -17,8 +17,9 @@ Game::Game() :
 	m_window{ sf::VideoMode{ 1800U, 1000U, 32U }, "SFML Game" },
 	m_exitGame{false} //when true game will exit
 {
+	m_gamestate = GameState::ContextFreeMode;
 	createWalls();
-	
+	m_sensitive.setVelocity(sf::Vector2f(200, 0));
 	vertices[0] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
 	vertices[1] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y - length), sf::Color::Red, sf::Vector2f(0, 10));
 	vertices[2] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
@@ -75,7 +76,7 @@ Game::Game() :
 	m_goalAI.setFillColor(sf::Color::Red);
 	m_goalVelocity = sf::Vector2f(0, 100);
 
-	m_gamestate = GameState::ContextFreeMode;
+	
 
 	m_font.loadFromFile("ASSETS/FONTS/ariblk.ttf");
 	m_time.setPosition(1300, 10);
@@ -136,6 +137,63 @@ Game::Game() :
 	wanderExecution.setFillColor(sf::Color::White);
 	wanderExecution.setCharacterSize(24);
 
+	seekTime.setPosition(300, 320);
+	seekTime.setFont(m_font);
+	seekTime.setFillColor(sf::Color::White);
+	seekTime.setCharacterSize(24);
+
+	seekExecution.setPosition(300, 360);
+	seekExecution.setFont(m_font);
+	seekExecution.setFillColor(sf::Color::White);
+	seekExecution.setCharacterSize(24);
+
+	seekPathLength.setPosition(300, 400);
+	seekPathLength.setFont(m_font);
+	seekPathLength.setFillColor(sf::Color::White);
+	seekPathLength.setCharacterSize(24);
+
+	seekCollision.setPosition(300, 440);
+	seekCollision.setFont(m_font);
+	seekCollision.setFillColor(sf::Color::White);
+	seekCollision.setCharacterSize(24);
+
+
+	sensitiveTime.setPosition(300, 320);
+	sensitiveTime.setFont(m_font);
+	sensitiveTime.setFillColor(sf::Color::White);
+	sensitiveTime.setCharacterSize(24);
+
+	sensitiveExecution.setPosition(300, 360);
+	sensitiveExecution.setFont(m_font);
+	sensitiveExecution.setFillColor(sf::Color::White);
+	sensitiveExecution.setCharacterSize(24);
+
+	sensitivePathLength.setPosition(300, 400);
+	sensitivePathLength.setFont(m_font);
+	sensitivePathLength.setFillColor(sf::Color::White);
+	sensitivePathLength.setCharacterSize(24);
+
+	sensitiveCollision.setPosition(300, 440);
+	sensitiveCollision.setFont(m_font);
+	sensitiveCollision.setFillColor(sf::Color::White);
+	sensitiveCollision.setCharacterSize(24);
+
+
+	if (!goalTexture.loadFromFile("ASSETS/IMAGES/goal.png"))
+	{
+		// error...
+	}
+	goalSprite.setTexture(goalTexture);
+	goalSprite.setPosition(sf::Vector2f(m_goalAI.getPosition().x -10, m_goalAI.getPosition().y));
+	goalSprite.setScale(0.5f, 0.5f);
+
+	for (int i = 0; i < 4; i++)
+	{
+		scores[i].setPosition(300, 320 + i * 40);
+		scores[i].setFont(m_font);
+		scores[i].setFillColor(sf::Color::White);
+		scores[i].setCharacterSize(24);
+	}
 }
 
 /// <summary>
@@ -278,6 +336,7 @@ void Game::processKeys(sf::Event t_event)
 /// <param name="t_deltaTime">time interval per frame</param>
 void Game::update(sf::Time t_deltaTime)
 {
+	goalSprite.setPosition(sf::Vector2f(m_goalAI.getPosition().x-10, m_goalAI.getPosition().y));
 	if (m_exitGame)
 	{
 		m_window.close(); 
@@ -405,20 +464,26 @@ for (int i = 0; i < 3; i++)
 {
 	distBools[i] = false;
 }
-if (moving && m_gamestate == GameState::SeekMode)
+if (m_gamestate == GameState::SeekMode)
 {
 	m_seek.move(t_deltaTime);
+	if (moving)
+	{
+		m_seek.setVelocity(sf::Vector2f(m_seek.getVel().x, m_seek.getVel().y + force));
+	}
 }
 
-m_seek.setVelocity(sf::Vector2f(m_seek.getVel().x, m_seek.getVel().y + 2.4f));
+
 
 if (m_seek.getBody().getGlobalBounds().intersects(m_goalAI.getGlobalBounds()))
 {
 	moving = false;
+	m_seek.setPosition();
 	m_gamestate = GameState::SeekModeResults;
+	m_seek.calcPathLength();
 }
 sprite.setPosition(m_contextFree.getPos().x, m_contextFree.getPos().y - 20);
-sprite2.setPosition(m_sensitive.getPos().x, m_sensitive.getPos().y - 20);
+sprite2.setPosition(m_sensitive.getPos().x-45, m_sensitive.getPos().y - 20);
 sprite3.setPosition(m_seek.getPos().x, m_seek.getPos().y - 20);
 sprite4.setPosition(m_wander.getPos().x, m_wander.getPos().y - 20);
 
@@ -453,6 +518,7 @@ if (m_gamestate == GameState::ContextFreeResults)
 	contextFreeTime.setString("Time taken was: " + std::to_string(counter / 60.0f));
 	contextFreePathLength.setString("Path length was: " + std::to_string(m_contextFree.getPathLength() ));
 	modeString.setString("Context-free results:");
+	contextFreeScore = (counter / 60.0f) + m_contextFree.getPathLength() + 400;
 	resultsTimer++;
 
 	if (resultsTimer == 300)
@@ -460,7 +526,6 @@ if (m_gamestate == GameState::ContextFreeResults)
 		m_gamestate = GameState::WanderMode;
 		counter = 0;
 	}
-
 }
 
 
@@ -469,7 +534,7 @@ if (m_gamestate == GameState::WanderMode)
 	resultsTimer = 0;
 	m_time.setString("Time: " + std::to_string(counter / 60.0f));
 	counter+=2;
-
+	
 	if (calculateDistBetween(m_goalAI.getPosition(), m_wander.getPos()) < 50.0f)
 	{
 		m_wander.calcPathLength();
@@ -480,6 +545,7 @@ if (m_gamestate == GameState::WanderMode)
 
 if (m_gamestate == GameState::WanderModeResults)
 {
+	wanderScore = (counter / 60.0f) + m_wander.getPathLength() + (100 * wanderCollisionCount);
 	modeString.setString("Wander results:");
 	wanderTime.setString("Time taken was: " + std::to_string(counter / 60.0f));
 	wanderCollision.setString("Number of collisions: " + std::to_string(wanderCollisionCount /2 + 1));
@@ -496,21 +562,115 @@ if (m_gamestate == GameState::WanderModeResults)
 
 if (m_gamestate == GameState::SeekMode)
 {
+	
+	executionStart = t_deltaTime.asSeconds();
+	m_time.setString("Time: " + std::to_string(counter / 60.0f));
+	counter++;
 	std::cout << std::to_string(m_seek.getPos().y) << std::endl;
 	if (m_seek.getPos().y >= 700 && m_seek.getPos().x < 800)
 	{
+		m_seek.getDesiredVelocity() = getUnitVector(sf::Vector2f(m_goalAI.getPosition() - m_seek.getPos()));
+		m_seek.getSteering() = m_seek.getDesiredVelocity() - m_seek.getVel();
 		m_seek.setVelocity(sf::Vector2f(200, 0));
+		m_seek.calcPathLength();
 	}
 	if (m_seek.getPos().y >= 900 && m_seek.getPos().x < 1200 && m_seek.getPos().x > 1000)
 	{
+		
+		m_seek.calcPathLength();
 		m_seek.setVelocity(sf::Vector2f(m_goalAI.getPosition() - m_seek.getPos()));
 	}
 	else if (m_seek.getPos().y >= 900 && m_seek.getPos().x > 1200)
 	{
+		m_seek.calcPathLength();
+		force = 0.0f;
 		m_seek.setSteering();
 		m_seek.setVelocity(sf::Vector2f(m_goalAI.getPosition() - m_seek.getPos()));
+	} 
+
+	if (m_seek.getPos().x > m_goalAI.getPosition().x)
+	{
+		m_seek.setVelocity(sf::Vector2f(getUnitVector(m_goalAI.getPosition() - m_seek.getPos())));
 	}
 
+	resultsTimer = 0;
+	executionEnd = t_deltaTime.asSeconds();
+	if (counter / 60.0f == 6)
+	{
+		force = 0.0f;
+	}
+}
+
+
+if (m_gamestate == GameState::SeekModeResults)
+{
+	seekScore = (counter / 60.0f) + m_seek.getPathLength() + 0;
+	modeString.setString("Seek results:");
+	seekTime.setString("Time taken was:  " + std::to_string(counter / 60.0f));
+	seekExecution.setString("Average execution time: " + std::to_string(executionStart - executionEnd / counter));
+	seekCollision.setString("Number of collisions: " + std::to_string(0));
+	seekPathLength.setString("Path length was: " + std::to_string(m_seek.getPathLength()));
+
+	resultsTimer++;
+
+	if (resultsTimer == 300)
+	{
+		m_gamestate = GameState::ContextSensitiveMode;
+		counter = 0;
+	}
+}
+
+if (m_gamestate == GameState::ContextSensitiveMode)
+{
+	executionStart = t_deltaTime.asSeconds();
+	m_time.setString("Time: " + std::to_string(counter / 60.0f));
+	counter++;
+	if (counter / 60.0f >= 3.4 && m_sensitive.getPos().x < 1100)
+	{
+		m_sensitive.setVelocity(sf::Vector2f(200, 50));
+		m_sensitive.calcPathLength();
+	}
+	if (m_sensitive.getPos().x > 1300)
+	{
+		m_sensitive.setVelocity(sf::Vector2f( getUnitVector(m_goalAI.getPosition() - m_sensitive.getPos())));
+		m_sensitive.calcPathLength();
+		moving = false;
+	}
+	if (m_sensitive.getBody().getGlobalBounds().intersects(m_goalAI.getGlobalBounds()))
+	{
+		m_sensitive.calcPathLength();
+		m_gamestate = GameState::ContextSensitiveResults;
+	}
+	m_sensitive.move(t_deltaTime);
+	executionEnd = t_deltaTime.asSeconds();
+	resultsTimer = 0;
+}
+
+
+if (m_gamestate == GameState::ContextSensitiveResults)
+{
+	contextSensitiveScore = (counter / 60.0f) + m_sensitive.getPathLength() + 0;
+	modeString.setString("ContextSensitive results:");
+	sensitiveTime.setString("Time taken was:  " + std::to_string(counter / 60.0f));
+	sensitiveExecution.setString("Average execution time: " + std::to_string(executionStart - executionEnd / counter));
+	sensitiveCollision.setString("Number of collisions: " + std::to_string(0));
+	sensitivePathLength.setString("Path length was: " + std::to_string(m_sensitive.getPathLength()));
+
+	resultsTimer++;
+
+	if(resultsTimer == 300)
+	{
+		m_gamestate = GameState::Comparison;
+	}
+}
+
+if (m_gamestate == GameState::Comparison)
+{
+	modeString.setString("Scores of each AI:");
+	scores[0].setString("ContextFree Score: " + std::to_string(contextFreeScore));
+	scores[1].setString("Wander Score: " + std::to_string(wanderScore));
+	scores[2].setString("Seek Score: " + std::to_string(seekScore));
+	scores[3].setString("ContextSensitive Score: " + std::to_string(contextSensitiveScore));
 }
 }
 
@@ -539,6 +699,7 @@ void Game::render()
 	}
 
 	m_window.draw(m_goalAI);
+	m_window.draw(goalSprite);
 
 	if (m_gamestate == GameState::ContextFreeMode)
 	{
@@ -560,6 +721,15 @@ void Game::render()
 		m_window.draw(m_seek.getBody());
 		m_window.draw(sprite3);
 	}
+	else if (m_gamestate == GameState::SeekModeResults)
+	{
+		m_window.draw(resultMenu);
+		m_window.draw(modeString);
+		m_window.draw(seekTime);
+		m_window.draw(seekExecution);
+		m_window.draw(seekPathLength);
+		m_window.draw(seekCollision);
+	}
 	else if (m_gamestate == GameState::WanderMode)
 	{
 		m_window.draw(m_wander.getBody());
@@ -579,6 +749,24 @@ void Game::render()
 		m_window.draw(m_sensitive.getBody());
 		m_window.draw(vertices, numOfVertices, sf::Lines);
 		m_window.draw(sprite2);
+	}
+	else if (m_gamestate == GameState::ContextSensitiveResults)
+	{
+		m_window.draw(resultMenu);
+		m_window.draw(modeString);
+		m_window.draw(sensitiveCollision);
+		m_window.draw(sensitiveExecution);
+		m_window.draw(sensitivePathLength);
+		m_window.draw(sensitiveTime);
+	}
+	else if (m_gamestate == GameState::Comparison)
+	{
+		m_window.draw(resultMenu);
+		m_window.draw(modeString);
+		for (int i = 0; i < 4; i++)
+		{
+			m_window.draw(scores[i]);
+		}
 	}
 	m_window.draw(m_time);
 	m_window.display();
