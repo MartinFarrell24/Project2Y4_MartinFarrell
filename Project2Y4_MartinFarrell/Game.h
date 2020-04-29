@@ -11,6 +11,8 @@
 #include"Wander.h"
 #include<ctime>
 #include"Seek.h"
+#include"Gamestate.h"
+#include<string.h>
 
 class Game
 {
@@ -40,7 +42,6 @@ private:
 	Wall m_walls[20];
 	Wall m_outerWalls[108];
 	Wall m_bottomWall[18];
-	int count = 0;
 	int numOfFrames = 30;
 	static const int numOfVertices = 16;
 	sf::Vertex vertices[numOfVertices];
@@ -61,6 +62,32 @@ private:
 	sf::Sprite sprite3;
 	sf::Texture texture4;
 	sf::Sprite sprite4;
+	GameState m_gamestate;
+	sf::RectangleShape m_goalAI;
+	sf::Vector2f m_goalVelocity;
+	sf::Text m_time;
+	sf::Font m_font;
+	float counter = 0.0f;
+
+
+	sf::RectangleShape resultMenu;
+	sf::Text modeString;
+	sf::Text contextFreeTime;
+	sf::Text contextFreeExecution;
+	sf::Text contextFreePathLength;
+	sf::Text contextFreeCollision;
+	sf::Text wanderTime;
+	sf::Text wanderExecution;
+	sf::Text wanderPathLength;
+	sf::Text wanderCollision;
+
+	int wanderCollisionCount = 0;
+
+	bool distBools[3];
+	float executionStart;
+	float executionEnd;
+	float resultsTimer = 0;
+	bool doOnce = false;
 };
 
 #endif // !GAME_HPP

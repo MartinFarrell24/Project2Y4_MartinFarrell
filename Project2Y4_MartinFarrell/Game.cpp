@@ -69,6 +69,73 @@ Game::Game() :
 	sprite4.setTexture(texture4);
 	sprite4.setPosition(400, 400);
 	sprite4.setScale(sf::Vector2f(0.15, 0.15));
+
+	m_goalAI.setPosition(sf::Vector2f(1350, 200));
+	m_goalAI.setSize(sf::Vector2f(50, 50));
+	m_goalAI.setFillColor(sf::Color::Red);
+	m_goalVelocity = sf::Vector2f(0, 100);
+
+	m_gamestate = GameState::WanderMode;
+
+	m_font.loadFromFile("ASSETS/FONTS/ariblk.ttf");
+	m_time.setPosition(1300, 10);
+	m_time.setCharacterSize(24);
+	m_time.setString("time: " + std::to_string(312.0f / 60));
+	m_time.setFillColor(sf::Color::Black);
+	m_time.setFont(m_font);
+	
+	resultMenu.setPosition(200, 200);
+	resultMenu.setSize(sf::Vector2f(600, 600));
+	resultMenu.setFillColor(sf::Color::Black);
+
+	contextFreeTime.setPosition(300, 320);
+	contextFreeTime.setFont(m_font);
+	contextFreeTime.setFillColor(sf::Color::White);
+	contextFreeTime.setCharacterSize(24);
+	
+	contextFreeExecution.setPosition(300, 360);
+	contextFreeExecution.setFont(m_font);
+	contextFreeExecution.setFillColor(sf::Color::White);
+	contextFreeExecution.setCharacterSize(24);
+
+
+	contextFreePathLength.setPosition(300, 400);
+	contextFreePathLength.setFont(m_font);
+	contextFreePathLength.setFillColor(sf::Color::White);
+	contextFreePathLength.setCharacterSize(24);
+
+	contextFreeCollision.setPosition(300, 440);
+	contextFreeCollision.setFont(m_font);
+	contextFreeCollision.setFillColor(sf::Color::White);
+	contextFreeCollision.setCharacterSize(24);
+	contextFreeCollision.setString("Number of Collisions: 2");
+
+	modeString.setPosition(300, 270);
+	modeString.setFont(m_font);
+	modeString.setFillColor(sf::Color::White);
+	modeString.setCharacterSize(24);
+	modeString.setStyle(sf::Text::Underlined);
+
+	wanderTime.setPosition(300, 320);
+	wanderTime.setFont(m_font);
+	wanderTime.setFillColor(sf::Color::White);
+	wanderTime.setCharacterSize(24);
+
+	wanderCollision.setPosition(300, 440);
+	wanderCollision.setFont(m_font);
+	wanderCollision.setFillColor(sf::Color::White);
+	wanderCollision.setCharacterSize(24);
+
+	wanderPathLength.setPosition(300, 400);
+	wanderPathLength.setFont(m_font);
+	wanderPathLength.setFillColor(sf::Color::White);
+	wanderPathLength.setCharacterSize(24);
+
+	wanderExecution.setPosition(300, 360);
+	wanderExecution.setFont(m_font);
+	wanderExecution.setFillColor(sf::Color::White);
+	wanderExecution.setCharacterSize(24);
+
 }
 
 /// <summary>
@@ -217,12 +284,33 @@ void Game::update(sf::Time t_deltaTime)
 	}
 	if (m_contextFree.getPos().y > 650 && m_contextFree.getPos().y < 700)
 	{
+		if (distBools[2] == false)
+		{
+			executionStart = t_deltaTime.asSeconds();
+		}
 		m_contextFree.setVelocity(m_maze.grid[34][18].getPosition());
+		if (m_gamestate == GameState::ContextFreeMode)
+		{
+			if (distBools[2] == false)
+			{
+				m_contextFree.calcPathLength();
+				distBools[2] = true;
+				executionEnd = t_deltaTime.asSeconds();
+			}
+		}
 	}
 
 	if (m_contextFree.getPos().y > 800)
 	{
-		m_contextFree.setVelocity(m_maze.grid[34][18].getPosition());
+		m_contextFree.setVelocity(m_goalAI.getPosition());
+		if (m_gamestate == GameState::ContextFreeMode)
+		{
+			if (distBools[0] == false)
+			{
+				m_contextFree.calcPathLength();
+				distBools[0] = true;
+			}
+		}
 	}
 
 	m_contextFree.move(m_maze.grid[34][18].getPosition(), t_deltaTime);
@@ -236,71 +324,166 @@ void Game::update(sf::Time t_deltaTime)
 		if (m_walls[i].getBody().getGlobalBounds().intersects(m_wander.getBody().getGlobalBounds()))
 		{
 			m_wander.setVelocity(sf::Vector2f(m_wander.getVel().x * -1, m_wander.getVel().y * -1));
+			if (!doOnce)
+			{
+				wanderCollisionCount++;
+				m_wander.calcPathLength();
+				doOnce = true;
+			}
 		}
 	}
+	doOnce = false;
 
-	if (calculateDistBetween(m_maze.grid[34][18].getPosition(), m_contextFree.getPos()) < 50.0f)
+	if (calculateDistBetween(m_goalAI.getPosition(), m_contextFree.getPos()) < 50.0f && m_gamestate == GameState::ContextFreeMode)
 	{
 		m_contextFree.setMovingFalse();
+		m_contextFree.calcPathLength();
+		if (m_gamestate == GameState::ContextFreeMode)
+		{
+			if (distBools[1] == false)
+			{
+				m_contextFree.calcPathLength();
+				distBools[1] = true;
+			}
+		}
+		m_gamestate = GameState::ContextFreeResults;
 	}
-	vertices[0] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
-	vertices[1] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y - length), sf::Color::Red, sf::Vector2f(0, 10));
-	vertices[2] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
-	vertices[3] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width + length), sf::Color::Red, sf::Vector2f(0, 10));
-	vertices[4] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
-	vertices[5] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
-	vertices[6] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
-	vertices[7] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
-	vertices[8] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
-	vertices[9] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
-	vertices[10] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
-	vertices[11] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
-	vertices[12] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
-	vertices[13] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
-	vertices[14] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
-	vertices[15] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
-
+vertices[0] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+vertices[1] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y - length), sf::Color::Red, sf::Vector2f(0, 10));
+vertices[2] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y), sf::Color::Red, sf::Vector2f(0, 0));
+vertices[3] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width + length), sf::Color::Red, sf::Vector2f(0, 10));
+vertices[4] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+vertices[5] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+vertices[6] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 0));
+vertices[7] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width), sf::Color::Red, sf::Vector2f(0, 10));
+vertices[8] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+vertices[9] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
+vertices[10] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+vertices[11] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
+vertices[12] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+vertices[13] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width - length, m_sensitive.getPos().y + width + length), sf::Color::Green, sf::Vector2f(0, 10));
+vertices[14] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width, m_sensitive.getPos().y + width), sf::Color::Green, sf::Vector2f(0, 0));
+vertices[15] = sf::Vertex(sf::Vector2f(m_sensitive.getPos().x + width + length, m_sensitive.getPos().y + width - length), sf::Color::Green, sf::Vector2f(0, 10));
+if (m_gamestate == GameState::WanderMode)
+{
+	executionStart = t_deltaTime.asSeconds();
 	m_wander.move(t_deltaTime);
+	executionEnd = t_deltaTime.asSeconds();
+}
 
-	if (m_wander.getBody().getPosition().y < 50)
+if (m_wander.getBody().getPosition().y < 50)
+{
+	m_wander.setVelocity(sf::Vector2f(rand() % 400 - 200, rand() % 200 + 1));
+	wanderCollisionCount++;
+	m_wander.calcPathLength();
+}
+if (m_wander.getBody().getPosition().x < 50)
+{
+	m_wander.setVelocity(sf::Vector2f(rand() % 200 + 1, rand() % 400 - 200));
+	wanderCollisionCount++;
+	m_wander.calcPathLength();
+}
+if (m_wander.getBody().getPosition().y > 900)
+{
+	m_wander.setVelocity(sf::Vector2f(rand() % 400 - 200, rand() % 200 * -1));
+	wanderCollisionCount++;
+	m_wander.calcPathLength();
+}
+if (m_wander.getBody().getPosition().x > 1700)
+{
+	m_wander.setVelocity(sf::Vector2f(rand() % 200 * -1, rand() % 400 - 200));
+	wanderCollisionCount++;
+	m_wander.calcPathLength();
+}
+
+if ( m_wander.getPos().x > 1300 && calculateDistBetween(m_goalAI.getPosition(), m_wander.getPos()) < 600.0f)
+{
+	m_wander.setVelocity(sf::Vector2f(m_goalAI.getPosition() - m_wander.getPos()));
+}
+
+for (int i = 0; i < 3; i++)
+{
+	distBools[i] = false;
+}
+if (moving)
+{
+	m_seek.move(t_deltaTime);
+}
+
+m_seek.setVelocity(sf::Vector2f(m_seek.getVel().x, m_seek.getVel().y + 2.4f));
+
+if (m_seek.getBody().getGlobalBounds().intersects(m_maze.grid[34][18].getGlobalBounds()))
+{
+	moving = false;
+}
+sprite.setPosition(m_contextFree.getPos().x, m_contextFree.getPos().y - 20);
+sprite2.setPosition(m_sensitive.getPos().x, m_sensitive.getPos().y - 20);
+sprite3.setPosition(m_seek.getPos().x, m_seek.getPos().y - 20);
+sprite4.setPosition(m_wander.getPos().x, m_wander.getPos().y - 20);
+
+
+m_goalAI.setPosition(m_goalAI.getPosition() + m_goalVelocity * t_deltaTime.asSeconds());
+if (m_goalAI.getPosition().y >= 799 && m_goalAI.getPosition().x < 1599)
+{
+	m_goalVelocity = sf::Vector2f(100, 0);
+}
+else if (m_goalAI.getPosition().y >= 799 && m_goalAI.getPosition().x >= 1599)
+{
+	m_goalVelocity = sf::Vector2f(0, -100);
+}
+else if (m_goalAI.getPosition().y <= 200 && m_goalAI.getPosition().x >= 1599)
+{
+	m_goalVelocity = sf::Vector2f(-100, 0);
+}
+else if (m_goalAI.getPosition().y <= 200 && m_goalAI.getPosition().x <= 1350)
+{
+	m_goalVelocity = sf::Vector2f(0, 100);
+}
+
+if (m_gamestate == GameState::ContextFreeMode)
+{
+	m_contextFree.update();
+	counter++;
+	m_time.setString("Time: " + std::to_string(counter / 60.0f));
+}
+if (m_gamestate == GameState::ContextFreeResults)
+{
+	contextFreeExecution.setString("Average execution time: " + std::to_string(executionStart - executionEnd / counter));
+	contextFreeTime.setString("Time taken was: " + std::to_string(counter / 60.0f));
+	contextFreePathLength.setString("Path length was: " + std::to_string(m_contextFree.getPathLength() ));
+	modeString.setString("Context-free results:");
+	resultsTimer++;
+
+	if (resultsTimer == 300)
 	{
-		m_wander.setVelocity(sf::Vector2f(rand() % 400 - 200, rand() % 200 + 1));
-	}
-	if (m_wander.getBody().getPosition().x < 50)
-	{
-		m_wander.setVelocity(sf::Vector2f(rand() %200+1, rand() %400 - 200));
-	}
-	if (m_wander.getBody().getPosition().y > 900)
-	{
-		m_wander.setVelocity(sf::Vector2f(rand() % 400 - 200, rand()%200 * -1));
-	}
-	if (m_wander.getBody().getPosition().x > 1700)
-	{
-		m_wander.setVelocity(sf::Vector2f(rand() % 200 *-1, rand() % 400 - 200));
+		m_gamestate = GameState::WanderMode;
+		counter = 0;
 	}
 
-	if (calculateDistBetween(m_maze.grid[34][18].getPosition(), m_wander.getPos()) < 300.0f)
-	{
-		m_wander.setVelocity(sf::Vector2f(m_maze.grid[34][18].getPosition() - m_wander.getPos()));
-	}
+}
 
-	if (moving)
-	{
-		m_seek.move(t_deltaTime);
-	}
-	//m_seek.getDesiredVelocity() = getUnitVector(sf::Vector2f(m_maze.grid[34][18].getPosition() - m_seek.getPos()));
-	//m_seek.getSteering() = m_seek.getDesiredVelocity() - m_seek.getVel();
-	//m_seek.getSteering().x = trunc(m_seek.getSteering().x);
-	m_seek.setVelocity(sf::Vector2f(m_seek.getVel().x, m_seek.getVel().y + 2.4f));
 
-	if (m_seek.getBody().getGlobalBounds().intersects(m_maze.grid[34][18].getGlobalBounds()))
+if (m_gamestate == GameState::WanderMode)
+{
+	m_time.setString("Time: " + std::to_string(counter / 60.0f));
+	counter++;
+
+	if (calculateDistBetween(m_goalAI.getPosition(), m_wander.getPos()) < 50.0f)
 	{
-		moving = false;
+		m_wander.calcPathLength();
+		m_gamestate = GameState::WanderModeResults;
 	}
-	sprite.setPosition(m_contextFree.getPos().x, m_contextFree.getPos().y - 20);
-	sprite2.setPosition(m_sensitive.getPos().x, m_sensitive.getPos().y - 20);
-	sprite3.setPosition(m_seek.getPos().x, m_seek.getPos().y - 20);
-	sprite4.setPosition(m_wander.getPos().x, m_wander.getPos().y - 20);
+}
+
+
+if (m_gamestate == GameState::WanderModeResults)
+{
+	modeString.setString("Wander results:");
+	wanderTime.setString("Time taken was: " + std::to_string(counter / 30.0f));
+	wanderCollision.setString("Number of collisions: " + std::to_string(wanderCollisionCount /2 + 1));
+	wanderPathLength.setString("Path length was: " + std::to_string(m_wander.getPathLength()));
+	wanderExecution.setString("Average execution time: " + std::to_string(executionStart - executionEnd / counter));
+}
 }
 
 /// <summary>
@@ -309,7 +492,7 @@ void Game::update(sf::Time t_deltaTime)
 void Game::render()
 {
 	m_window.clear();
-	
+
 	for (int row = 0; row < 36; row++)
 	{
 		for (int col = 0; col < 20; col++)
@@ -327,15 +510,49 @@ void Game::render()
 		m_window.draw(m_outerWalls->getBody());
 	}
 
-	m_window.draw(m_contextFree.getBody());
-	m_window.draw(m_sensitive.getBody());
-	m_window.draw(vertices, numOfVertices, sf::Lines);
-	m_window.draw(m_wander.getBody());
-	m_window.draw(m_seek.getBody());
-	m_window.draw(sprite);
-	m_window.draw(sprite2);
-	m_window.draw(sprite3);
-	m_window.draw(sprite4);
+	m_window.draw(m_goalAI);
+
+	if (m_gamestate == GameState::ContextFreeMode)
+	{
+		m_window.draw(m_contextFree.getBody());
+		m_window.draw(sprite);
+		m_window.draw(m_time);
+	}
+	else if (m_gamestate == GameState::ContextFreeResults)
+	{
+		m_window.draw(resultMenu);
+		m_window.draw(contextFreeTime);
+		m_window.draw(contextFreeExecution);
+		m_window.draw(contextFreeCollision);
+		m_window.draw(modeString);
+		m_window.draw(contextFreePathLength);
+	}
+	else if (m_gamestate == GameState::SeekMode)
+	{
+		m_window.draw(m_seek.getBody());
+		m_window.draw(sprite3);
+	}
+	else if (m_gamestate == GameState::WanderMode)
+	{
+		m_window.draw(m_wander.getBody());
+		m_window.draw(sprite4);
+	}
+	else if (m_gamestate == GameState::WanderModeResults)
+	{
+		m_window.draw(resultMenu);
+		m_window.draw(modeString);
+		m_window.draw(wanderTime);
+		m_window.draw(wanderCollision);
+		m_window.draw(wanderPathLength);
+		m_window.draw(wanderExecution);
+	}
+	else if (m_gamestate == GameState::ContextSensitiveMode)
+	{
+		m_window.draw(m_sensitive.getBody());
+		m_window.draw(vertices, numOfVertices, sf::Lines);
+		m_window.draw(sprite2);
+	}
+	m_window.draw(m_time);
 	m_window.display();
 }
 

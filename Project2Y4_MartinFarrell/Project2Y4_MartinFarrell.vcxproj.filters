@@ -68,6 +68,9 @@
     <ClInclude Include="Seek.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gamestate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="ASSETS\IMAGES\SFML-LOGO.png">

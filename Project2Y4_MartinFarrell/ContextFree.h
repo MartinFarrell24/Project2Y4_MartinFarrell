@@ -1,5 +1,6 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include<iostream>
 
 class ContextFree
 {
@@ -12,6 +13,11 @@ public:
 	void setVelocityDown();
 	void move(sf::Vector2f goal, sf::Time time);
 	void setMovingFalse();
+	void update();
+	float getCount();
+	void calcPathLength();
+	float getPathLength();
+
 
 private:
 	sf::CircleShape m_body;
@@ -20,5 +26,8 @@ private:
 	float speed = 250;
 	bool moving = true;
 
+	float count = 0.0;
 	sf::Vector2f lookAhead;
+	sf::Vector2f prevPos;
+	float distTravelled = 0.0;
 };

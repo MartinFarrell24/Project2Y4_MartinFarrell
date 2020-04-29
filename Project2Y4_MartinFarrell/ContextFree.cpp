@@ -3,6 +3,7 @@
 ContextFree::ContextFree()
 {
 	m_pos = sf::Vector2f(100, 105);
+	prevPos = m_pos;
 	m_body.setPointCount(3);
 	m_body.setFillColor(sf::Color::Yellow);
 	m_body.setPosition(sf::Vector2f(m_pos));
@@ -49,4 +50,25 @@ void ContextFree::move(sf::Vector2f goal, sf::Time time)
 void ContextFree::setMovingFalse()
 {
 	moving = false;
+}
+
+void ContextFree::update()
+{
+	count++;
+}
+
+float ContextFree::getCount()
+{
+	return count;
+}
+
+void ContextFree::calcPathLength()
+{
+	distTravelled += sqrt(((prevPos.x - m_pos.x) * (prevPos.x - m_pos.x)) + ((prevPos.y - m_pos.y) * (prevPos.y - m_pos.y)));
+	prevPos = m_pos;
+}
+
+float ContextFree::getPathLength()
+{
+	return distTravelled;
 }
