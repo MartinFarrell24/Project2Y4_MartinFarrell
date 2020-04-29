@@ -75,7 +75,7 @@ Game::Game() :
 	m_goalAI.setFillColor(sf::Color::Red);
 	m_goalVelocity = sf::Vector2f(0, 100);
 
-	m_gamestate = GameState::WanderMode;
+	m_gamestate = GameState::ContextFreeMode;
 
 	m_font.loadFromFile("ASSETS/FONTS/ariblk.ttf");
 	m_time.setPosition(1300, 10);
